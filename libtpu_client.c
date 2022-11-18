@@ -63,10 +63,10 @@ int main(int argc, char** argv) {
 
   // An example of simple program to sum two parameters.
   const char* hlo_module_text = R"(HloModule add_vec_module
-    ENTRY %add_vec (a: s32[16][1024][1024], b: s32[16][1024][1024]) -> s32[16][1024][1024] {
-      %a = s32[16][1024][1024] parameter(0)
-      %b = s32[16][1024][1024] parameter(1)
-      ROOT %sum = s32[16][1024][1024] add(%a, %b)
+    ENTRY %add_vec (a: s8[16][1024][1024], b: s8[16][1024][1024]) -> s8[16][1024][1024] {
+      %a = s8[16][1024][1024] parameter(0)
+      %b = s8[16][1024][1024] parameter(1)
+      ROOT %sum = s8[16][1024][1024] add(%a, %b)
     }
     )";
 
