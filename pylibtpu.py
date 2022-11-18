@@ -43,7 +43,7 @@ class TpuDriverFn(ctypes.Structure):
     if self.TpuDriver_Version:
       return self.TpuDriver_Version().decode('utf8')
   def __repr__(self):
-    return f"{type(self).__name__}(version={self.version})"
+    return f"{type(self).__name__}(version={self.version!r})"
 
 
 
