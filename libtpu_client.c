@@ -63,10 +63,10 @@ int main(int argc, char** argv) {
 
   // An example of simple program to sum two parameters.
   const char* hlo_module_text = R"(HloModule add_vec_module
-    ENTRY %add_vec (a: s32[16777216], b: s32[16777216]) -> s32[16777216] {
-      %a = s32[16777216] parameter(0)
-      %b = s32[16777216] parameter(1)
-      ROOT %sum = s32[16777216] add(%a, %b)
+    ENTRY %add_vec (a: f32[16777216], b: f32[16777216]) -> f32[16777216] {
+      %a = f32[16777216] parameter(0)
+      %b = f32[16777216] parameter(1)
+      ROOT %sum = f32[16777216] add(%a, %b)
     }
     )";
 
@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
       driver_fn.TpuDriver_LoadProgram(driver, /*core_id=*/0, cph,
       /*eventc=*/1, /*eventv=*/compile_events);
 
-  typedef int32_t dtype_t;
+  typedef float32_t dtype_t;
   const int numel = 16*1024*1024;
   const int size = sizeof(dtype_t) * numel;
 
@@ -166,17 +166,17 @@ int main(int argc, char** argv) {
   driver_fn.TpuDriver_FreeEvent(dealloc_ev3);
 
   fprintf(stdout, "sum:\n"); fflush(stdout);
-  int64_t total = 0;
+  double total = 0;
   size_t i;
   for (i = 0; i < numel; ++i) {
     if (numel < 1048576) {
-      fprintf(stdout, "%d ", sum_src[i]);
+      fprintf(stdout, "%f ", sum_src[i]);
     }
     total += sum_src[i];
   }
   fprintf(stdout, "...\n"); fflush(stdout);
-  fprintf(stdout, "shape: s32[16777216] (numel=%d)\n", numel); fflush(stdout);
-  fprintf(stdout, "total: %jd\n", total); fflush(stdout);
+  fprintf(stdout, "shape: f32[16777216] (numel=%d)\n", numel); fflush(stdout);
+  fprintf(stdout, "total: %jf\n", total); fflush(stdout);
 
   dlclose(handle);
   exit(EXIT_SUCCESS);
