@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
     )";
 
   fprintf(stdout, "------ Going to Compile a TPU program ------\n");
-  printf("HLO text:\n%d\n%s\n", int(strlen(hlo_module_text)), hlo_module_text);
+  printf("HLO text:\n%d\n%s\n", (int)strlen(hlo_module_text), hlo_module_text);
   struct TpuCompiledProgramHandle* cph =
       driver_fn.TpuDriver_CompileProgramFromText(driver, hlo_module_text,
       /*num_replicas=*/1, /*eventc=*/0, /*eventv*/NULL);
