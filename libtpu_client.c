@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
       /*eventc=*/1, /*eventv=*/compile_events);
 
   const int numel = 16*1024*1024;
-  const int size = sizeof(int32_t) * numel
+  const int size = sizeof(int32_t) * numel;
 
   fprintf(stdout, "------ Going to Allocate a TPU Buffer ------\n");
   struct TpuBufferHandle* buf_a_handle =
