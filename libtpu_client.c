@@ -174,7 +174,7 @@ int main(int argc, char** argv) {
     total += sum_src[i];
   }
   fprintf(stdout, "...\n"); fflush(stdout);
-  fprintf(stdout, "shape: i8[16][1024][1024] (numel=%d)\n", numel); fflush(stdout);
+  fprintf(stdout, "shape: s8[1024] (numel=%d)\n", numel); fflush(stdout);
   fprintf(stdout, "total: %jd\n", total); fflush(stdout);
 
   dlclose(handle);
