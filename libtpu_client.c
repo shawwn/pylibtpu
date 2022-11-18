@@ -63,10 +63,10 @@ int main(int argc, char** argv) {
 
   // An example of simple program to sum two parameters.
   const char* hlo_module_text = R"(HloModule add_vec_module
-    ENTRY %add_vec (a: s8[1048576], b: s8[1048576]) -> s8[1048576] {
-      %a = s8[1048576] parameter(0)
-      %b = s8[1048576] parameter(1)
-      ROOT %sum = s8[1048576] add(%a, %b)
+    ENTRY %add_vec (a: s32[1048576], b: s32[1048576]) -> s32[1048576] {
+      %a = s32[1048576] parameter(0)
+      %b = s32[1048576] parameter(1)
+      ROOT %sum = s32[1048576] add(%a, %b)
     }
     )";
 
@@ -83,8 +83,9 @@ int main(int argc, char** argv) {
       driver_fn.TpuDriver_LoadProgram(driver, /*core_id=*/0, cph,
       /*eventc=*/1, /*eventv=*/compile_events);
 
+  typedef int32_t dtype_t;
   const int numel = 1048576;
-  const int size = sizeof(int8_t) * numel;
+  const int size = sizeof(dtype_t) * numel;
 
   fprintf(stdout, "------ Going to Allocate a TPU Buffer ------\n"); fflush(stdout);
   struct TpuBufferHandle* buf_a_handle =
@@ -99,9 +100,9 @@ int main(int argc, char** argv) {
       driver_fn.TpuDriver_Allocate(driver, /*core-id=*/0, /*memory_region=*/1,
         /*bytes=*/size, /*eventc=*/0, /*eventv=*/NULL);
 
-  int8_t* a_src = calloc(sizeof(int8_t), numel);
-  int8_t* b_src = calloc(sizeof(int8_t), numel);
-  int8_t* sum_src = calloc(sizeof(int8_t), numel);
+  dtype_t* a_src = calloc(sizeof(dtype_t), numel);
+  dtype_t* b_src = calloc(sizeof(dtype_t), numel);
+  dtype_t* sum_src = calloc(sizeof(dtype_t), numel);
   for (int i = 0; i < numel; ++i) {
     a_src[i] = 1;
     b_src[i] = 2;
@@ -174,7 +175,7 @@ int main(int argc, char** argv) {
     total += sum_src[i];
   }
   fprintf(stdout, "...\n"); fflush(stdout);
-  fprintf(stdout, "shape: s8[1048576] (numel=%d)\n", numel); fflush(stdout);
+  fprintf(stdout, "shape: s32[1048576] (numel=%d)\n", numel); fflush(stdout);
   fprintf(stdout, "total: %jd\n", total); fflush(stdout);
 
   dlclose(handle);
