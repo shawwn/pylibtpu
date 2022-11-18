@@ -112,7 +112,7 @@ cph = driver_fn.TpuDriver_CompileProgramFromText(driver, hlo_module_text,
       None) # eventv
 
 compile_events = (TpuEvent_p * 1)()
-compile_events[0] = cph.event
+compile_events[0] = cph.contents.event
 
 print("------ Going to Load a TPU program ------\n")
 
