@@ -79,5 +79,5 @@ print(driver_fn)
 
 
 print("opening local://")
-driver = driver_fn.TpuDriver_Open("local://")
+driver = driver_fn.TpuDriver_Open(b"local://")
 
