@@ -134,11 +134,6 @@ cph = driver_fn.TpuDriver_CompileProgramFromText(driver, hlo_module_text,
       1, # num_replicas
       0, # eventc
       None) # eventv
-
-cph = driver_fn.TpuDriver_CompileProgramFromText(driver, hlo_module_text,
-      1, # num_replicas
-      0, # eventc
-      None) # eventv
 if not cph:
   print("failed to compile!")
 else:
