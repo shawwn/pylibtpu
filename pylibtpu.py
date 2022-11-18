@@ -117,10 +117,10 @@ print("opening local://")
 driver = driver_fn.TpuDriver_Open(b"local://")
 print(bool(driver))
 
-print("------ Resetting ------\n")
-status_p = driver_fn.TpuDriver_Reset(driver)
-if status_p:
-  print(status_p.contents)
+# print("------ Resetting ------\n")
+# status_p = driver_fn.TpuDriver_Reset(driver)
+# if status_p:
+#   print(status_p.contents)
 
 print("------ Going to Query for System Information ------\n")
 info_p = driver_fn.TpuDriver_QuerySystemInfo(driver)
