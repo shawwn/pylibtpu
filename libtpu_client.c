@@ -169,7 +169,7 @@ int main(int argc, char** argv) {
     }
     total += sum_src[i];
   }
-  fprintf(stdout, "...\n", sum_src[i]);
+  fprintf(stdout, "...\n");
   fprintf(stdout, "shape: i8[%d]\n", size);
   fprintf(stdout, "total: %jd\n", total);
 
