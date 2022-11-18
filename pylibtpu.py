@@ -1,8 +1,7 @@
 import ctypes
-import rktio as rio
 import dataclasses
 
-libtpu = rio.loadlib("/usr/lib/libtpu.so")
+libtpu = ctypes.cdll.LoadLibrary("/usr/lib/libtpu.so")
 
 FuncPtr = ctypes.CFUNCTYPE(None)
 
