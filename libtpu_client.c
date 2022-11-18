@@ -83,7 +83,8 @@ int main(int argc, char** argv) {
       driver_fn.TpuDriver_LoadProgram(driver, /*core_id=*/0, cph,
       /*eventc=*/1, /*eventv=*/compile_events);
 
-  const int size = 16*1024*1024;
+  const int numel = 16*1024*1024;
+  const int size = sizeof(int32_t) * numel
 
   fprintf(stdout, "------ Going to Allocate a TPU Buffer ------\n");
   struct TpuBufferHandle* buf_a_handle =
@@ -98,10 +99,10 @@ int main(int argc, char** argv) {
       driver_fn.TpuDriver_Allocate(driver, /*core-id=*/0, /*memory_region=*/1,
         /*bytes=*/size, /*eventc=*/0, /*eventv=*/NULL);
 
-  int32_t* a_src = calloc(sizeof(int32_t), size);
-  int32_t* b_src = calloc(sizeof(int32_t), size);
-  int32_t* sum_src = calloc(sizeof(int32_t), size);
-  for (int i = 0; i < size; ++i) {
+  int32_t* a_src = calloc(sizeof(int32_t), numel);
+  int32_t* b_src = calloc(sizeof(int32_t), numel);
+  int32_t* sum_src = calloc(sizeof(int32_t), numel);
+  for (int i = 0; i < numel; ++i) {
     a_src[i] = 1;
     b_src[i] = 2;
     sum_src[i] = 0;
@@ -165,14 +166,14 @@ int main(int argc, char** argv) {
   fprintf(stdout, "sum:\n");
   int64_t total = 0;
   size_t i;
-  for (i = 0; i < size; ++i) {
-    if (size < 1024) {
+  for (i = 0; i < numel; ++i) {
+    if (numel < 1024) {
       fprintf(stdout, "%d ", sum_src[i]);
     }
     total += sum_src[i];
   }
   fprintf(stdout, "...\n");
-  fprintf(stdout, "shape: i8[16][1024][1024] (numel=%d)\n", size);
+  fprintf(stdout, "shape: i8[16][1024][1024] (numel=%d)\n", numel);
   fprintf(stdout, "total: %jd\n", total);
 
   dlclose(handle);
