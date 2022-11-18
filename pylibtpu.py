@@ -97,6 +97,15 @@ print(driver_fn)
 print("opening local://")
 driver = driver_fn.TpuDriver_Open(b"local://")
 
+print("------ Going to Query for System Information ------\n")
+info_p = driver_fn.TpuDriver_QuerySystemInfo(driver)
+if not info_p:
+  print("failed!")
+else:
+  info = bytes(info_p.contents)
+  info_p = driver_fn.TpuDriver_FreeSystemInfo(info_p)
+  print("System Information:", info)
+
 
 hlo_module_text = b"""(HloModule add_vec_module
     ENTRY %add_vec (a: s32[256], b: s32[256]) -> s32[256] {
