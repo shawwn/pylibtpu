@@ -63,10 +63,10 @@ int main(int argc, char** argv) {
 
   // An example of simple program to sum two parameters.
   const char* hlo_module_text = R"(HloModule add_vec_module
-    ENTRY %add_vec (a: s8[1048576], b: s8[10485761024]) -> s8[10485761024] {
-      %a = s8[10485761024] parameter(0)
-      %b = s8[10485761024] parameter(1)
-      ROOT %sum = s8[10485761024] add(%a, %b)
+    ENTRY %add_vec (a: s8[1048576], b: s8[1048576]) -> s8[1048576] {
+      %a = s8[1048576] parameter(0)
+      %b = s8[1048576] parameter(1)
+      ROOT %sum = s8[1048576] add(%a, %b)
     }
     )";
 
@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
       driver_fn.TpuDriver_LoadProgram(driver, /*core_id=*/0, cph,
       /*eventc=*/1, /*eventv=*/compile_events);
 
-  const int numel = 10485761024;
+  const int numel = 1048576;
   const int size = sizeof(int8_t) * numel;
 
   fprintf(stdout, "------ Going to Allocate a TPU Buffer ------\n"); fflush(stdout);
@@ -168,13 +168,13 @@ int main(int argc, char** argv) {
   int64_t total = 0;
   size_t i;
   for (i = 0; i < numel; ++i) {
-    if (numel < 1024) {
+    if (numel < 1048576) {
       fprintf(stdout, "%d ", sum_src[i]);
     }
     total += sum_src[i];
   }
   fprintf(stdout, "...\n"); fflush(stdout);
-  fprintf(stdout, "shape: s8[10485761024] (numel=%d)\n", numel); fflush(stdout);
+  fprintf(stdout, "shape: s8[1048576] (numel=%d)\n", numel); fflush(stdout);
   fprintf(stdout, "total: %jd\n", total); fflush(stdout);
 
   dlclose(handle);
