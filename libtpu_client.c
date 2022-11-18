@@ -22,6 +22,7 @@ limitations under the License.
 #include <dlfcn.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "libtpu.h"
 
