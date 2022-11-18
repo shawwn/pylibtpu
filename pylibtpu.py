@@ -136,6 +136,21 @@ else:
   pp(system_info_json)
 
 
+hlo_module_reduce_text = b""""
+HloModule BadReduce
+Sum {
+  x.1 = f32[] parameter(0)
+  y.1 = f32[] parameter(1)
+  ROOT add.1 = f32[] add(x.1, y.1)
+}
+ENTRY reduce.1 {
+  parameter = f32[2,2,2,3]{3,2,1,0} parameter(0)
+  init_value = f32[] constant(0)
+  reduce = f32[2,2,3]{2,1,0} reduce(parameter, init_value), dimensions={1}, to_apply=Sum
+  ROOT copy = f32[2,2,3]{2,1,0} copy(reduce)
+}
+"""
+
 hlo_module_text = b"""HloModule add_vec_module
     ENTRY %add_vec (a: s32[256], b: s32[256]) -> s32[256] {
       %a = s32[256] parameter(0)
@@ -144,14 +159,25 @@ hlo_module_text = b"""HloModule add_vec_module
     }
     """
 
-print("------ Going to Compile a TPU program ------\n")
-print("HLO text:")
-print(len(hlo_module_text))
-print(hlo_module_text.decode('utf8'))
-cph = driver_fn.TpuDriver_CompileProgramFromText(driver, hlo_module_text,
-      1, # num_replicas
-      0, # eventc
-      None) # eventv
+def hlo_compile(hlo_text):
+  print("------ Going to Compile a TPU program ------\n")
+  print("HLO text:")
+  print(len(hlo_text))
+  print(hlo_text.decode('utf8'))
+  return driver_fn.TpuDriver_CompileProgramFromText(driver, hlo_text,
+        1, # num_replicas
+        0, # eventc
+        None) # eventv
+  if not cph:
+    print("failed to compile!")
+  else:
+    return cph
+
+cph = hlo_compile(hlo_module_reduce_text)
+if not cph:
+  print("failed to compile!")
+
+cph = hlo_compile(hlo_module_text)
 if not cph:
   print("failed to compile!")
 else:
