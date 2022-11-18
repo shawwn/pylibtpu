@@ -49,6 +49,8 @@ TpuSystemInfo_p = ctypes.POINTER(TpuSystemInfo)
 
 @dataclasses.dataclass
 class TpuStatus(ctypes.Structure):
+  code: int
+  msg: str
   _fields_ = [
       ("code", ctypes.c_int32),
       ("msg", ctypes.c_char_p),
