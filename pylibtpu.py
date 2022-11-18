@@ -1,3 +1,4 @@
+import sys
 import ctypes
 import dataclasses
 
@@ -110,16 +111,18 @@ cph = driver_fn.TpuDriver_CompileProgramFromText(driver, hlo_module_text,
       1, # num_replicas
       0, # eventc
       None) # eventv
+if not cph:
+  print("failed to compile!")
+else:
+  compile_events = (TpuEvent_p * 1)()
+  compile_events[0] = cph.contents.event
 
-compile_events = (TpuEvent_p * 1)()
-compile_events[0] = cph.contents.event
+  print("------ Going to Load a TPU program ------\n")
 
-print("------ Going to Load a TPU program ------\n")
+  lph = driver_fn.TpuDriver_LoadProgram(driver,
+      0, # core_id
+      cph,
+      1, # eventc
+      compile_events) # eventv
 
-lph = driver_fn.TpuDriver_LoadProgram(driver,
-    0, # core_id
-    cph,
-    1, # eventc
-    compile_events) # eventv
-
-print(lph)
+  print(lph)
