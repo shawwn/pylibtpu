@@ -115,6 +115,7 @@ print(driver_fn)
 
 print("opening local://")
 driver = driver_fn.TpuDriver_Open(b"local://")
+print(bool(driver))
 
 print("------ Resetting ------\n")
 status_p = driver_fn.TpuDriver_Reset(driver)
@@ -144,6 +145,10 @@ hlo_module_text = b"""(HloModule add_vec_module
     )"""
 
 print("------ Going to Compile a TPU program ------\n")
+print("HLO text:")
+print(len(hlo_module_text.decode('latin1')))
+print(len(hlo_module_text.decode('utf8')))
+print(hlo_module_text.decode('utf8'))
 cph = driver_fn.TpuDriver_CompileProgramFromText(driver, hlo_module_text,
       1, # num_replicas
       0, # eventc
