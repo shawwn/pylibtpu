@@ -63,10 +63,10 @@ int main(int argc, char** argv) {
 
   // An example of simple program to sum two parameters.
   const char* hlo_module_text = R"(HloModule add_vec_module
-    ENTRY %add_vec (a: s32[1048576], b: s32[1048576]) -> s32[1048576] {
-      %a = s32[1048576] parameter(0)
-      %b = s32[1048576] parameter(1)
-      ROOT %sum = s32[1048576] add(%a, %b)
+    ENTRY %add_vec (a: s32[2][1048576], b: s32[2][1048576]) -> s32[2][1048576] {
+      %a = s32[2][1048576] parameter(0)
+      %b = s32[2][1048576] parameter(1)
+      ROOT %sum = s32[2][1048576] add(%a, %b)
     }
     )";
 
@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
       /*eventc=*/1, /*eventv=*/compile_events);
 
   typedef int32_t dtype_t;
-  const int numel = 1048576;
+  const int numel = 2*1048576;
   const int size = sizeof(dtype_t) * numel;
 
   fprintf(stdout, "------ Going to Allocate a TPU Buffer ------\n"); fflush(stdout);
