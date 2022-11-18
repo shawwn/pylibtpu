@@ -140,8 +140,9 @@ int main(int argc, char** argv) {
   TpuStatus* status = driver_fn.TpuDriver_EventAwait(transfer_sum_event,
                                                      10000000);
   if (status->code != 0) {
-    fprintf(stdout, "Transfer Event Await: Code: %d, Message: %s\n", fflush(stdout);
+    fprintf(stdout, "Transfer Event Await: Code: %d, Message: %s\n",
           status->code, status->msg);
+    fflush(stdout);
   }
 
   fprintf(stdout, "------ Going to Unload a TPU program ------\n"); fflush(stdout);
