@@ -2,7 +2,7 @@ import sys
 import ctypes
 import dataclasses
 
-libtpu = ctypes.cdll.LoadLibrary("/usr/lib/libtpu.so")
+libtpu = ctypes.cdll.LoadLibrary("libtpu.so")
 
 FuncPtr = ctypes.CFUNCTYPE(None)
 
@@ -116,6 +116,11 @@ hlo_module_text = b"""(HloModule add_vec_module
     )"""
 
 print("------ Going to Compile a TPU program ------\n")
+cph = driver_fn.TpuDriver_CompileProgramFromText(driver, hlo_module_text,
+      1, # num_replicas
+      0, # eventc
+      None) # eventv
+
 cph = driver_fn.TpuDriver_CompileProgramFromText(driver, hlo_module_text,
       1, # num_replicas
       0, # eventc
