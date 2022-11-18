@@ -136,7 +136,7 @@ else:
   pp(system_info_json)
 
 
-hlo_module_reduce_text = b""""
+hlo_module_reduce_text = b"""
 HloModule BadReduce
 Sum {
   x.1 = f32[] parameter(0)
