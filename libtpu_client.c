@@ -176,7 +176,8 @@ int main(int argc, char** argv) {
   }
   fprintf(stdout, "...\n"); fflush(stdout);
   fprintf(stdout, "shape: f32[16777216] (numel=%d)\n", numel); fflush(stdout);
-  fprintf(stdout, "total: %jf\n", total); fflush(stdout);
+  //fprintf(stdout, "total: %jd\n", total); fflush(stdout);
+  fprintf(stdout, "total: %f\n", total); fflush(stdout);
 
   dlclose(handle);
   exit(EXIT_SUCCESS);
