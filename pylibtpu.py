@@ -136,18 +136,17 @@ else:
   pp(system_info_json)
 
 
-hlo_module_text = b"""(HloModule add_vec_module
+hlo_module_text = b"""HloModule add_vec_module
     ENTRY %add_vec (a: s32[256], b: s32[256]) -> s32[256] {
       %a = s32[256] parameter(0)
       %b = s32[256] parameter(1)
       ROOT %sum = s32[256] add(%a, %b)
     }
-    )"""
+    """
 
 print("------ Going to Compile a TPU program ------\n")
 print("HLO text:")
-print(len(hlo_module_text.decode('latin1')))
-print(len(hlo_module_text.decode('utf8')))
+print(len(hlo_module_text))
 print(hlo_module_text.decode('utf8'))
 cph = driver_fn.TpuDriver_CompileProgramFromText(driver, hlo_module_text,
       1, # num_replicas
