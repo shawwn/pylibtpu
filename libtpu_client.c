@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
   struct TpuCompiledProgramHandle* cph =
       driver_fn.TpuDriver_CompileProgramFromText(driver, hlo_module_text,
       /*num_replicas=*/1, /*eventc=*/0, /*eventv*/NULL);
-  printf("cph = 0x%p", cph);
+  printf("cph = 0x%p\n", cph);
 
   TpuEvent* compile_events[] = {cph->event};
   fprintf(stdout, "------ Going to Load a TPU program ------\n");
