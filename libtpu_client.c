@@ -161,7 +161,7 @@ int main(int argc, char** argv) {
   driver_fn.TpuDriver_FreeEvent(dealloc_ev3);
 
   fprintf(stdout, "sum:\n");
-  int64_t total = 0
+  int64_t total = 0;
   for (size_t i = 0; i < size; ++i) {
     if (size < 1024) {
       fprintf(stdout, "%d ", sum_src[i]);
