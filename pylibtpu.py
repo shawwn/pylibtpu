@@ -32,7 +32,6 @@ class TpuCompiledProgramHandle(ctypes.Structure):
       ("internal_handle", ctypes.c_void_p),
       ("event", TpuEvent_p),
       ]
-  pass
 
 TpuCompiledProgramHandle_p = ctypes.POINTER(TpuCompiledProgramHandle)
 
@@ -49,11 +48,21 @@ TpuSystemInfo_p = ctypes.POINTER(TpuSystemInfo)
 
 
 @dataclasses.dataclass
+class TpuStatus(ctypes.Structure):
+  _fields_ = [
+      ("code", ctypes.c_int32),
+      ("msg", ctypes.c_char_p),
+      ]
+
+TpuStatus_p = ctypes.POINTER(TpuStatus)
+
+
+@dataclasses.dataclass
 class TpuDriverFn(ctypes.Structure):
   _fields_ = [
     ("TpuDriver_Open", ctypes.CFUNCTYPE(TpuDriver_p, ctypes.c_char_p)),
     ("TpuDriver_Close", ctypes.CFUNCTYPE(None, TpuDriver_p)),
-    ("TpuDriver_Reset", FuncPtr),
+    ("TpuDriver_Reset", ctypes.CFUNCTYPE(TpuEvent_p, TpuDriver_p)),
     ("TpuDriver_ComputeLinearizedBytesFromShape", FuncPtr),
     ("TpuDriver_QuerySystemInfo", ctypes.CFUNCTYPE(TpuSystemInfo_p, TpuDriver_p)),
     ("TpuDriver_FreeSystemInfo", ctypes.CFUNCTYPE(None, TpuSystemInfo_p)),
@@ -98,14 +107,17 @@ driver_fn = TpuDriverFn()
 
 libtpu.TpuDriver_Initialize(driver_fn, True)
 
-driver_fn.TpuDriver_Version.errcheck = lambda version: version.decode('utf8')
-
 print(driver_fn.TpuDriver_Version())
 print(driver_fn)
 
 
 print("opening local://")
 driver = driver_fn.TpuDriver_Open(b"local://")
+
+print("------ Resetting ------\n")
+status_p = driver_fn.TpuDriver_Reset(driver)
+if status_p:
+  print(status_p.contents)
 
 print("------ Going to Query for System Information ------\n")
 info_p = driver_fn.TpuDriver_QuerySystemInfo(driver)
