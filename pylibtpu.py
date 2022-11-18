@@ -62,7 +62,7 @@ class TpuDriverFn(ctypes.Structure):
   _fields_ = [
     ("TpuDriver_Open", ctypes.CFUNCTYPE(TpuDriver_p, ctypes.c_char_p)),
     ("TpuDriver_Close", ctypes.CFUNCTYPE(None, TpuDriver_p)),
-    ("TpuDriver_Reset", ctypes.CFUNCTYPE(TpuEvent_p, TpuDriver_p)),
+    ("TpuDriver_Reset", ctypes.CFUNCTYPE(TpuStatus_p, TpuDriver_p)),
     ("TpuDriver_ComputeLinearizedBytesFromShape", FuncPtr),
     ("TpuDriver_QuerySystemInfo", ctypes.CFUNCTYPE(TpuSystemInfo_p, TpuDriver_p)),
     ("TpuDriver_FreeSystemInfo", ctypes.CFUNCTYPE(None, TpuSystemInfo_p)),
