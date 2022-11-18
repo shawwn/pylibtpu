@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
       driver_fn.TpuDriver_LoadProgram(driver, /*core_id=*/0, cph,
       /*eventc=*/1, /*eventv=*/compile_events);
 
-  const int size = 1024;
+  const int size = 16*1024*1024;
 
   fprintf(stdout, "------ Going to Allocate a TPU Buffer ------\n");
   struct TpuBufferHandle* buf_a_handle =
@@ -161,9 +161,10 @@ int main(int argc, char** argv) {
   driver_fn.TpuDriver_FreeEvent(dealloc_ev3);
 
   fprintf(stdout, "sum:\n");
-  for (size_t i = 0; i < size; ++i) {
+  for (size_t i = 0; i < min(size, 1024); ++i) {
     fprintf(stdout, "%d ", sum_src[i]);
   }
+  fprintf(stdout, "...\n", sum_src[i]);
 
   dlclose(handle);
   exit(EXIT_SUCCESS);
