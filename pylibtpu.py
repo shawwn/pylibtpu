@@ -10,6 +10,21 @@ class TpuDriver(ctypes.Structure):
 
 TpuDriver_p = ctypes.POINTER(TpuDriver)
 
+class TpuEvent(ctypes.Structure):
+  pass
+
+TpuEvent_p = ctypes.POINTER(TpuEvent)
+TpuEventList = ctypes.POINTER(TpuEvent_p)
+
+class TpuCompiledProgramHandle(ctypes.Structure):
+  _fields_ = [
+      ("internal_handle", ctypes.c_void_p),
+      ("event", TpuEvent_p),
+      ]
+  pass
+
+TpuCompiledProgramHandle_p = ctypes.POINTER(TpuCompiledProgramHandle)
+
 class TpuSystemInfo(ctypes.Structure):
   _fields_ = [
       ("bytes", ctypes.POINTER(ctypes.c_char)),
@@ -34,9 +49,9 @@ class TpuDriverFn(ctypes.Structure):
     ("TpuDriver_LinearizeShape", FuncPtr),
     ("TpuDriver_DelinearizeShape", FuncPtr),
     ("TpuDriver_CompileProgram", FuncPtr),
-    ("TpuDriver_CompileProgramFromText", FuncPtr),
+    ("TpuDriver_CompileProgramFromText", ctypes.CFUNCTYPE(TpuCompiledProgramHandle_p, TpuDriver_p, ctypes.c_char_p, ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(TpuEvent_p)),
     ("TpuDriver_FreeCompiledProgramHandle", FuncPtr),
-    ("TpuDriver_LoadProgram", FuncPtr),
+    ("TpuDriver_LoadProgram", ctypes.CFUNCTYPE(ctypes.c_void_p, TpuDriver_p, ctypes.c_int32, TpuCompiledProgramHandle_p, ctypes.c_int32, ctypes.POINTER(TpuEvent_p))),
     ("TpuDriver_UnloadProgram", FuncPtr),
     ("TpuDriver_ExecuteProgram", FuncPtr),
     ("TpuDriver_AllocateTuple", FuncPtr),
@@ -81,3 +96,30 @@ print(driver_fn)
 print("opening local://")
 driver = driver_fn.TpuDriver_Open(b"local://")
 
+
+hlo_module_text = """(HloModule add_vec_module
+    ENTRY %add_vec (a: s32[256], b: s32[256]) -> s32[256] {
+      %a = s32[256] parameter(0)
+      %b = s32[256] parameter(1)
+      ROOT %sum = s32[256] add(%a, %b)
+    }
+    )"""
+
+print("------ Going to Compile a TPU program ------\n")
+cph = driver_fn.TpuDriver_CompileProgramFromText(driver, hlo_module_text,
+      1, # num_replicas
+      0, # eventc
+      None) # eventv
+
+compile_events = (TpuEvent_p * 1)()
+compile_events[0] = cph.event
+
+print("------ Going to Load a TPU program ------\n")
+
+lph = driver_fn.TpuDriver_LoadProgram(driver,
+    0, # core_id
+    cph,
+    1, # eventc
+    compile_events) # eventv
+
+print(lph)
