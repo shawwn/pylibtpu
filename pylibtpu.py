@@ -97,7 +97,7 @@ print("opening local://")
 driver = driver_fn.TpuDriver_Open(b"local://")
 
 
-hlo_module_text = """(HloModule add_vec_module
+hlo_module_text = b"""(HloModule add_vec_module
     ENTRY %add_vec (a: s32[256], b: s32[256]) -> s32[256] {
       %a = s32[256] parameter(0)
       %b = s32[256] parameter(1)
