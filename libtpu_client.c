@@ -161,10 +161,16 @@ int main(int argc, char** argv) {
   driver_fn.TpuDriver_FreeEvent(dealloc_ev3);
 
   fprintf(stdout, "sum:\n");
-  for (size_t i = 0; i < min(size, 1024); ++i) {
-    fprintf(stdout, "%d ", sum_src[i]);
+  int64_t total = 0
+  for (size_t i = 0; i < size; ++i) {
+    if (size < 1024) {
+      fprintf(stdout, "%d ", sum_src[i]);
+    }
+    total += sum_src[i];
   }
   fprintf(stdout, "...\n", sum_src[i]);
+  fprintf(stdout, "shape: i8[%d]\n", size);
+  fprintf(stdout, "total: %jd\n", total);
 
   dlclose(handle);
   exit(EXIT_SUCCESS);
