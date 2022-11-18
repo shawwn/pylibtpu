@@ -49,7 +49,7 @@ class TpuDriverFn(ctypes.Structure):
     ("TpuDriver_LinearizeShape", FuncPtr),
     ("TpuDriver_DelinearizeShape", FuncPtr),
     ("TpuDriver_CompileProgram", FuncPtr),
-    ("TpuDriver_CompileProgramFromText", ctypes.CFUNCTYPE(TpuCompiledProgramHandle_p, TpuDriver_p, ctypes.c_char_p, ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(TpuEvent_p)),
+    ("TpuDriver_CompileProgramFromText", ctypes.CFUNCTYPE(TpuCompiledProgramHandle_p, TpuDriver_p, ctypes.c_char_p, ctypes.c_int32, ctypes.c_int32, ctypes.POINTER(TpuEvent_p))),
     ("TpuDriver_FreeCompiledProgramHandle", FuncPtr),
     ("TpuDriver_LoadProgram", ctypes.CFUNCTYPE(ctypes.c_void_p, TpuDriver_p, ctypes.c_int32, TpuCompiledProgramHandle_p, ctypes.c_int32, ctypes.POINTER(TpuEvent_p))),
     ("TpuDriver_UnloadProgram", FuncPtr),
