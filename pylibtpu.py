@@ -1,6 +1,16 @@
 import sys
 import ctypes
 import dataclasses
+import json
+from pprint import pprint as pp
+
+from google.protobuf.json_format import MessageToJson
+import os
+
+sys.path.append(os.path.dirname(__file__))
+
+import tpu_driver_pb2
+
 
 libtpu = ctypes.cdll.LoadLibrary("libtpu.so")
 
@@ -105,6 +115,10 @@ else:
   info = bytes(info_p.contents)
   info_p = driver_fn.TpuDriver_FreeSystemInfo(info_p)
   print("System Information:", info)
+
+  system_info = tpu_driver_pb2.SystemInfo.FromString(info)
+  system_info_json = json.loads(MessageToJson(system_info))
+  pp(system_info_json)
 
 
 hlo_module_text = b"""(HloModule add_vec_module
