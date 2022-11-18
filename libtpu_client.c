@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
       driver_fn.TpuDriver_LoadProgram(driver, /*core_id=*/0, cph,
       /*eventc=*/1, /*eventv=*/compile_events);
 
-  typedef float32_t dtype_t;
+  typedef float dtype_t;
   const int numel = 16*1024*1024;
   const int size = sizeof(dtype_t) * numel;
 
