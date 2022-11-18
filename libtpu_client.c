@@ -98,7 +98,9 @@ int main(int argc, char** argv) {
       driver_fn.TpuDriver_Allocate(driver, /*core-id=*/0, /*memory_region=*/1,
         /*bytes=*/size, /*eventc=*/0, /*eventv=*/NULL);
 
-  char a_src[size], b_src[size], sum_src[size];
+  char* a_src = malloc(size);
+  char* b_src = malloc(size);
+  char* sum_src = malloc(size);
   for (int i = 0; i < size; ++i) {
     a_src[i] = 1;
     b_src[i] = 2;
