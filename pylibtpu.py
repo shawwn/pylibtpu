@@ -336,7 +336,7 @@ verify("allocate", buf_b_handle := driver_fn.TpuDriver_Allocate(driver,
     NULL)) # eventv
 
 print("------ Going to Allocate a TPU Buffer ------\n")
-verify("allocate", buf_out_handle := driver_fn.TpuDriver_Allocate(driver,
+verify("allocate", buf_sum_handle := driver_fn.TpuDriver_Allocate(driver,
     0, # core_id
     1, # memory_region
     size, # bytes
@@ -345,16 +345,16 @@ verify("allocate", buf_out_handle := driver_fn.TpuDriver_Allocate(driver,
 
 # a_src = (dtype_t * numel)()
 # b_src = (dtype_t * numel)()
-# out_src = (dtype_t * numel)()
+# sum_src = (dtype_t * numel)()
 # a_src[:] = [1] * numel
 # b_src[:] = [2] * numel
-# out_src[:] = [0] * numel
+# sum_src[:] = [0] * numel
 a = 1 * np.ones([numel], dtype=dtype_n)
 b = 2 * np.ones([numel], dtype=dtype_n)
-out = 0 * np.ones([numel], dtype=dtype_n)
+sum = 0 * np.ones([numel], dtype=dtype_n)
 a_src = a.ctypes.data
 b_src = b.ctypes.data
-out_src = out.ctypes.data
+sum_src = sum.ctypes.data
 
 print("------ Going to Transfer To Device ------\n")
 # TpuEvent* allocate_buf_a_events[] = {buf_a_handle->event};
@@ -380,8 +380,8 @@ print("------ Going to Execute a TPU program ------\n")
 device_assignment = DeviceAssignment()
 # TpuBufferHandle* input_buffer_handle[] = {buf_a_handle, buf_b_handle};
 input_buffer_handle = arrayof(TpuBufferHandle_p, buf_a_handle, buf_b_handle)
-# TpuBufferHandle* output_buffer_handle[] = {buf_out_handle};
-output_buffer_handle = arrayof(TpuBufferHandle_p, buf_out_handle)
+# TpuBufferHandle* output_buffer_handle[] = {buf_sum_handle};
+output_buffer_handle = arrayof(TpuBufferHandle_p, buf_sum_handle)
 # TpuEvent* transfer_events[] = {transfer_ev1, transfer_ev2};
 transfer_events = arrayof(TpuEvent_p, transfer_ev1, transfer_ev2)
 # struct TpuEvent* execute_event =
@@ -399,16 +399,17 @@ verify("execute", execute_event := driver_fn.TpuDriver_ExecuteProgram(driver, lp
 
 # fprintf(stdout, "------ Going to Transfer From Device ------\n"); fflush(stdout);
 print("------ Going to Transfer From Device ------\n")
+breakpoint()
 # TpuEvent* execute_events[] = {execute_event};
 execute_events = arrayof(TpuEvent_p, execute_event)
-# struct TpuEvent* transfer_out_event =
-#     driver_fn.TpuDriver_TransferFromDevice(driver, buf_out_handle, out_src,
+# struct TpuEvent* transfer_sum_event =
+#     driver_fn.TpuDriver_TransferFromDevice(driver, buf_sum_handle, sum_src,
 #       /*eventc=*/1, /*eventv=*/execute_events);
-verify("download", transfer_out_event := driver_fn.TpuDriver_TransferFromDevice(driver, buf_out_handle, out_src, 1, execute_events))
+verify("download", transfer_sum_event := driver_fn.TpuDriver_TransferFromDevice(driver, buf_sum_handle, sum_src, 1, execute_events))
 
-# TpuStatus* status = driver_fn.TpuDriver_EventAwait(transfer_out_event,
+# TpuStatus* status = driver_fn.TpuDriver_EventAwait(transfer_sum_event,
 #                                                    10000000);
-status = verify("await", driver_fn.TpuDriver_EventAwait(transfer_out_event, 10000000)).contents
+status = verify("await", driver_fn.TpuDriver_EventAwait(transfer_sum_event, 10000000)).contents
 # if (status->code != 0) {
 #   fprintf(stdout, "Transfer Event Await: Code: %d, Message: %s\n",
 #         status->code, status->msg);
@@ -417,4 +418,4 @@ status = verify("await", driver_fn.TpuDriver_EventAwait(transfer_out_event, 1000
 if status.code != 0:
   panic("Transfer Event Await: Code: %d, Message: %s\n" % (status.code, status.msg.decode('utf8')))
 
-print(a, " + ", b, " = ", out)
+print(a, " + ", b, " = ", sum)
