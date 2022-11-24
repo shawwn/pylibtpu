@@ -143,9 +143,9 @@ class TpuDriverFn(_c.Structure):
     ("TpuDriver_LinearizeShape", FuncPtr),
     ("TpuDriver_DelinearizeShape", FuncPtr),
     ("TpuDriver_CompileProgram", FuncPtr),
-    ("TpuDriver_CompileProgramFromText", _c.CFUNCTYPE(TpuCompiledProgramHandle_p, TpuDriver_p, char_p, int32_t, int32_t, _c.POINTER(TpuEvent_p))),
+    ("TpuDriver_CompileProgramFromText", _c.CFUNCTYPE(TpuCompiledProgramHandle_p, TpuDriver_p, char_p, int32_t, int32_t, TpuEventList)),
     ("TpuDriver_FreeCompiledProgramHandle", FuncPtr),
-    ("TpuDriver_LoadProgram", _c.CFUNCTYPE(TpuLoadedProgramHandle_p, TpuDriver_p, int32_t, TpuCompiledProgramHandle_p, int32_t, _c.POINTER(TpuEvent_p))),
+    ("TpuDriver_LoadProgram", _c.CFUNCTYPE(TpuLoadedProgramHandle_p, TpuDriver_p, int32_t, TpuCompiledProgramHandle_p, int32_t, TpuEventList)),
     ("TpuDriver_UnloadProgram", FuncPtr),
     # typedef struct TpuEvent*(PrototypeTpuDriver_ExecuteProgram)(
     #     struct TpuDriver* driver, struct TpuLoadedProgramHandle* handle,
@@ -157,24 +157,24 @@ class TpuDriverFn(_c.Structure):
       TpuDriver_p, TpuLoadedProgramHandle_p,
       int32_t, _c.POINTER(TpuBufferHandle_p),
       int32_t, _c.POINTER(TpuBufferHandle_p),
-      DeviceAssignment, int32_t, _c.POINTER(TpuEvent_p))),
+      DeviceAssignment, int32_t, TpuEventList)),
     # typedef struct TpuBufferHandle*(PrototypeTpuDriver_AllocateTuple)(
     #     struct TpuDriver* driver, int32_t core_id, int32_t memory_region,
     #     int32_t bufferc, struct TpuBufferHandle** buffer_handle, int32_t eventc,
     #     struct TpuEvent** eventv);
     ("TpuDriver_AllocateTuple", _c.CFUNCTYPE(TpuBufferHandle_p,
-      TpuDriver_p, int32_t, int32_t, int32_t, _c.POINTER(TpuBufferHandle_p), int32_t, _c.POINTER(TpuEvent_p))),
+      TpuDriver_p, int32_t, int32_t, int32_t, _c.POINTER(TpuBufferHandle_p), int32_t, TpuEventList)),
     # typedef struct TpuBufferHandle*(PrototypeTpuDriver_Allocate)(
     #     struct TpuDriver* driver, int32_t core_id, int32_t memory_region,
     #     int64_t num_bytes, int32_t eventc, struct TpuEvent** eventv);
     ("TpuDriver_Allocate", _c.CFUNCTYPE(TpuBufferHandle_p,
-      TpuDriver_p, int32_t, int32_t, int64_t, int32_t, _c.POINTER(TpuEvent_p))),
+      TpuDriver_p, int32_t, int32_t, int64_t, int32_t, TpuEventList)),
     # typedef struct TpuBufferHandle*(PrototypeTpuDriver_AllocateShape)(
     #     struct TpuDriver* driver, int32_t core_id, int32_t memory_region,
     #     const struct TpuAllocationShape shape, int32_t eventc,
     #     struct TpuEvent** eventv);
     ("TpuDriver_AllocateShape", _c.CFUNCTYPE(TpuBufferHandle_p,
-      TpuDriver_p, int32_t, int32_t, TpuAllocationShape, int32_t, _c.POINTER(TpuEvent_p))),
+      TpuDriver_p, int32_t, int32_t, TpuAllocationShape, int32_t, TpuEventList)),
     # /* Note: We are not responsible for freeing the event within the
     #  * TpuBufferHandle. You have to call FreeEvent separately to ensure that memory
     #  * does not leak.
@@ -183,16 +183,34 @@ class TpuDriverFn(_c.Structure):
     #     struct TpuDriver* driver, struct TpuBufferHandle* buffer_handle,
     #     int32_t eventc, struct TpuEvent** eventv);
     ("TpuDriver_Deallocate", _c.CFUNCTYPE(TpuEvent_p,
-      TpuDriver_p, TpuBufferHandle_p, int32_t, _c.POINTER(TpuEvent_p))),
-    ("TpuDriver_TransferToDevice", FuncPtr),
-    ("TpuDriver_TransferFromDevice", FuncPtr),
-    ("TpuDriver_TransferFromDeviceToDevice", FuncPtr),
+      TpuDriver_p, TpuBufferHandle_p, int32_t, TpuEventList)),
+    # typedef struct TpuEvent*(PrototypeTpuDriver_TransferToDevice)(
+    #     struct TpuDriver* driver, const void* src, struct TpuBufferHandle* dst,
+    #     int32_t eventc, struct TpuEvent** eventv);
+    ("TpuDriver_TransferToDevice", _c.CFUNCTYPE(TpuEvent_p,
+      TpuDriver_p, void_p, TpuBufferHandle_p, int32_t, TpuEventList)),
+    # typedef struct TpuEvent*(PrototypeTpuDriver_TransferFromDevice)(
+    #     struct TpuDriver* driver, struct TpuBufferHandle* src, void* dst,
+    #     int32_t eventc, struct TpuEvent** eventv);
+    ("TpuDriver_TransferFromDevice", _c.CFUNCTYPE(TpuEvent_p,
+      TpuDriver_p, TpuBufferHandle_p, void_p, int32_t, TpuEventList)),
+    # typedef struct TpuEvent*(PrototypeTpuDriver_TransferFromDeviceToDevice)(
+    #     struct TpuDriver* driver, struct TpuBufferHandle* src,
+    #     struct TpuBufferHandle* dst, int32_t eventc, struct TpuEvent** eventv);
+    ("TpuDriver_TransferFromDeviceToDevice", _c.CFUNCTYPE(TpuEvent_p,
+      TpuDriver_p, TpuBufferHandle_p, TpuBufferHandle_p, int32_t, TpuEventList)),
     ("TpuDriver_GetCompiledProgramShape", FuncPtr),
     ("TpuDriver_FreeCompiledProgramShape", FuncPtr),
     ("TpuDriver_EventAddCallback", FuncPtr),
-    ("TpuDriver_EventAwait", FuncPtr),
-    ("TpuDriver_FreeEvent", FuncPtr),
-    ("TpuDriver_FreeStatus", FuncPtr),
+    # typedef struct TpuStatus*(PrototypeTpuDriver_EventAwait)(struct TpuEvent* event,
+    #                                                          int64_t timeout_in_us);
+    ("TpuDriver_EventAwait", _c.CFUNCTYPE(TpuStatus_p,
+      TpuEventList, int64_t)),
+    # typedef void(PrototypeTpuDriver_FreeEvent)(struct TpuEvent* event);
+    ("TpuDriver_FreeEvent", _c.CFUNCTYPE(None, TpuEvent_p)),
+    # typedef void(PrototypeTpuDriver_FreeStatus)(struct TpuStatus* status);
+    ("TpuDriver_FreeStatus", _c.CFUNCTYPE(None, TpuStatus_p)),
+    # typedef const char*(PrototypeTpuDriver_Version)();
     ("TpuDriver_Version", _c.CFUNCTYPE(char_p)),
   ]
   @property
