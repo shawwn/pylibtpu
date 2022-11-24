@@ -206,7 +206,7 @@ class TpuDriverFn(_c.Structure):
     # typedef struct TpuStatus*(PrototypeTpuDriver_EventAwait)(struct TpuEvent* event,
     #                                                          int64_t timeout_in_us);
     ("TpuDriver_EventAwait", _c.CFUNCTYPE(TpuStatus_p,
-      TpuEventList, int64_t)),
+      TpuEvent_p, int64_t)),
     # typedef void(PrototypeTpuDriver_FreeEvent)(struct TpuEvent* event);
     ("TpuDriver_FreeEvent", _c.CFUNCTYPE(None, TpuEvent_p)),
     # typedef void(PrototypeTpuDriver_FreeStatus)(struct TpuStatus* status);
