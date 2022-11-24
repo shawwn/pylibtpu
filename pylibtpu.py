@@ -295,11 +295,17 @@ cph = hlo_assert_compile(hlo_module_reduce_text)
 # typedef float dtype_t;
 # const int numel = 16*1024*1024;
 # const int size = sizeof(dtype_t) * numel;
-dtype_t = float32_t
-dtype_n = np.float32
 numel = 16 * 1024 * 1024
-size = _c.sizeof(dtype_t) * numel
-dtype_s = f"f32[{numel}]"
+try:
+  from bfloat16ext import bfloat16
+  dtype_size = 2
+  dtype_n = bfloat16
+  dtype_s = f"bf16[{numel}]"
+except ImportError:
+  dtype_size = _c.sizeof(float32_t)
+  dtype_n = np.float32
+  dtype_s = f"f32[{numel}]"
+size = dtype_size * numel
 hlo_module_text = f"""HloModule add_vec_module
     ENTRY %add_vec (a: {dtype_s}, b: {dtype_s}) -> {dtype_s} {{
       %a = {dtype_s} parameter(0)
