@@ -28,6 +28,7 @@ char_p = _c.c_char_p
 bool_t = _c.c_bool
 
 NULL = None
+void = None
 
 def arrayof(ctype, *args):
   out = (ctype * len(args))()
@@ -136,11 +137,11 @@ TpuStatus_p = _c.POINTER(TpuStatus)
 class TpuDriverFn(_c.Structure):
   _fields_ = [
     ("TpuDriver_Open", _c.CFUNCTYPE(TpuDriver_p, char_p)),
-    ("TpuDriver_Close", _c.CFUNCTYPE(None, TpuDriver_p)),
+    ("TpuDriver_Close", _c.CFUNCTYPE(void, TpuDriver_p)),
     ("TpuDriver_Reset", _c.CFUNCTYPE(TpuStatus_p, TpuDriver_p)),
     ("TpuDriver_ComputeLinearizedBytesFromShape", FuncPtr),
     ("TpuDriver_QuerySystemInfo", _c.CFUNCTYPE(TpuSystemInfo_p, TpuDriver_p)),
-    ("TpuDriver_FreeSystemInfo", _c.CFUNCTYPE(None, TpuSystemInfo_p)),
+    ("TpuDriver_FreeSystemInfo", _c.CFUNCTYPE(void, TpuSystemInfo_p)),
     ("TpuDriver_LinearizeShape", FuncPtr),
     ("TpuDriver_DelinearizeShape", FuncPtr),
     ("TpuDriver_CompileProgram", FuncPtr),
@@ -208,9 +209,9 @@ class TpuDriverFn(_c.Structure):
     ("TpuDriver_EventAwait", _c.CFUNCTYPE(TpuStatus_p,
       TpuEvent_p, int64_t)),
     # typedef void(PrototypeTpuDriver_FreeEvent)(struct TpuEvent* event);
-    ("TpuDriver_FreeEvent", _c.CFUNCTYPE(None, TpuEvent_p)),
+    ("TpuDriver_FreeEvent", _c.CFUNCTYPE(void, TpuEvent_p)),
     # typedef void(PrototypeTpuDriver_FreeStatus)(struct TpuStatus* status);
-    ("TpuDriver_FreeStatus", _c.CFUNCTYPE(None, TpuStatus_p)),
+    ("TpuDriver_FreeStatus", _c.CFUNCTYPE(void, TpuStatus_p)),
     # typedef const char*(PrototypeTpuDriver_Version)();
     ("TpuDriver_Version", _c.CFUNCTYPE(char_p)),
   ]
