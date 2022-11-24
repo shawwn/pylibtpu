@@ -356,8 +356,10 @@ verify("allocate", buf_sum_handle := driver_fn.TpuDriver_Allocate(driver,
 # a_src[:] = [1] * numel
 # b_src[:] = [2] * numel
 # sum_src[:] = [0] * numel
-a = 1 * np.ones([numel], dtype=dtype_n)
-b = 2 * np.ones([numel], dtype=dtype_n)
+# a = (1 * np.ones([numel]).astype(dtype_n)
+# b = (2 * np.ones([numel]).astype(dtype_n)
+a = np.ones([numel]).astype(dtype_n)
+b = np.arange(numel, dtype=np.uint8).astype(dtype_n)
 sum = np.zeros([numel], dtype=dtype_n)
 a_src = a.ctypes.data_as(void_p)
 b_src = b.ctypes.data_as(void_p)
