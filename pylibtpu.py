@@ -351,10 +351,10 @@ verify("allocate", buf_sum_handle := driver_fn.TpuDriver_Allocate(driver,
 # sum_src[:] = [0] * numel
 a = 1 * np.ones([numel], dtype=dtype_n)
 b = 2 * np.ones([numel], dtype=dtype_n)
-sum = 0 * np.ones([numel], dtype=dtype_n)
-a_src = a.ctypes.data
-b_src = b.ctypes.data
-sum_src = sum.ctypes.data
+sum = np.zeros([numel], dtype=dtype_n)
+a_src = a.ctypes.data_as(void_p)
+b_src = b.ctypes.data_as(void_p)
+sum_src = sum.ctypes.data_as(void_p)
 
 print("------ Going to Transfer To Device ------\n")
 # TpuEvent* allocate_buf_a_events[] = {buf_a_handle->event};
@@ -399,7 +399,6 @@ verify("execute", execute_event := driver_fn.TpuDriver_ExecuteProgram(driver, lp
 
 # fprintf(stdout, "------ Going to Transfer From Device ------\n"); fflush(stdout);
 print("------ Going to Transfer From Device ------\n")
-breakpoint()
 # TpuEvent* execute_events[] = {execute_event};
 execute_events = arrayof(TpuEvent_p, execute_event)
 # struct TpuEvent* transfer_sum_event =
